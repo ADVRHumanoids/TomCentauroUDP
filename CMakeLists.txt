@@ -29,29 +29,15 @@ if ( ${ENABLE_XENO} )
    find_package(RTnet)
 endif()
 
-set(COMPILE_SENDER CACHE BOOL "OFF")
-set(COMPILE_RECEIVER CACHE BOOL "OFF")
-set(COMPILE_ROS_COMMUNICATION CACHE BOOL "OFF")
-
 # include 
 include_directories(include) 
 
                                       
 ########################################################################
 
-IF( ${COMPILE_SENDER} )
-
-    add_executable(tom_centauro_udp_sender
-        src/centauro_udp_sender.cpp
-    )
-	
-    library_install(tom_centauro_udp_sender 1 0 0)
-
-ENDIF(${COMPILE_SENDER})
-                                    
+                                   
 ########################################################################
 
-IF(${COMPILE_RECEIVER})
 
     # set Xenomain flags if Xenomai is founded
     if ( Xenomai_FOUND )
@@ -70,7 +56,6 @@ IF(${COMPILE_RECEIVER})
 
     library_install(tom_centauro_udp_receiver 1 0 0)
 
-ENDIF(${COMPILE_RECEIVER})
 
 ########################################################################
 

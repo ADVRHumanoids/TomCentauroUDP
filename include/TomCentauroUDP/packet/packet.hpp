@@ -2,7 +2,7 @@
 #define PACKETS_H
 
 
-namespace CentauroUDP {
+namespace TomCentauroUDP {
     namespace packet {
         struct master2slave {
             float timer_master;
