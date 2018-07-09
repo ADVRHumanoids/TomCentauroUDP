@@ -29,32 +29,32 @@ if ( ${ENABLE_XENO} )
    find_package(RTnet)
 endif()
 
-# include 
-include_directories(include) 
+find_package(XBotInterface REQUIRED)
 
-                                      
-########################################################################
+# include 
+include_directories(include ${XBotInterface_INCLUDE_DIRS}) 
 
                                    
 ########################################################################
 
 
-    # set Xenomain flags if Xenomai is founded
-    if ( Xenomai_FOUND )
-        # exe
-        add_executable(tom_centauro_udp_receiver
-            src/centauro_udp_receiver.cpp
-            src/rt_ipc.cpp
-        )
-        set_xeno_flags(tom_centauro_udp_receiver)
-    else ()
-        # exe
-        add_executable(tom_centauro_udp_receiver
-            src/centauro_udp_receiver.cpp
-        )
-    endif()
+# set Xenomain flags if Xenomai is founded
+if ( Xenomai_FOUND )
+    # exe
+    add_executable(tom_centauro_udp_receiver
+        src/centauro_udp_receiver.cpp
+        src/rt_ipc.cpp
+    )
+    set_xeno_flags(tom_centauro_udp_receiver)
+else ()
+    # exe
+    add_executable(tom_centauro_udp_receiver
+        src/centauro_udp_receiver.cpp
+    )
+endif()
 
-    library_install(tom_centauro_udp_receiver 1 0 0)
+target_link_libraries(tom_centauro_udp_receiver ${XBotInterface_LIBRARIES})
+library_install(tom_centauro_udp_receiver 1 0 0)
 
 
 ########################################################################
