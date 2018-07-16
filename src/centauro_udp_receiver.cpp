@@ -38,9 +38,9 @@ int main ( void ) {
     //keep listening for data
 
     // master to slave packet
-    struct TomCentauroUDP::packet::master2slave *pkt_to_receive = ( TomCentauroUDP::packet::master2slave * ) malloc ( BUFLEN_MASTER_2_SLAVE );
+    struct TomCentauroUDP::packet::master2slave *pkt_to_centauro = ( TomCentauroUDP::packet::master2slave * ) malloc ( BUFLEN_MASTER_2_SLAVE );
     // slave to master packet
-    struct TomCentauroUDP::packet::slave2master *pkt_to_send = ( TomCentauroUDP::packet::slave2master * ) malloc ( BUFLEN_SLAVE_2_MASTER );
+    struct TomCentauroUDP::packet::slave2master *pkt_from_centauro = ( TomCentauroUDP::packet::slave2master * ) malloc ( BUFLEN_SLAVE_2_MASTER );
 
     // exoskeleton pipe
     XBot::PublisherNRT<TomCentauroUDP::packet::master2slave> exoskeleton_pub("exoskeleton_pipe");
@@ -54,9 +54,9 @@ int main ( void ) {
     }
     
 //     TBD check if needed
-//     struct timeval read_timeout;
-//     read_timeout.tv_sec = 0;
-//     read_timeout.tv_usec = 10;
+     struct timeval read_timeout;
+     read_timeout.tv_sec = 0;
+     read_timeout.tv_usec = 1000;
 //     setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &read_timeout, sizeof read_timeout);
 
     //create send UDP socket
@@ -93,18 +93,24 @@ int main ( void ) {
     
     //keep listening for data
     while ( 1 ) {
-        XBot::Logger::info ( "Waiting for data...\n" );
+//        XBot::Logger::info ( "Waiting for data...\n" );
         
         // read from robot pipe
-        robot_sub.read(*pkt_to_send);
-//         int bytes = read ( robot_fd, ( void * ) pkt_to_send, BUFLEN_SLAVE_2_MASTER );
+        robot_sub.read(*pkt_from_centauro);
+//         int bytes = read ( robot_fd, ( void * ) pkt_from_centauro, BUFLEN_SLAVE_2_MASTER );
 
-        pkt_to_send->timer_master = count;
+        XBot::Logger::info () <<
+                              pkt_from_centauro->r_position_x << " " <<
+                              pkt_from_centauro->r_position_y << " " <<
+                              pkt_from_centauro->r_position_z << " " <<
+                              XBot::Logger::endl();
+
+        pkt_from_centauro->timer_master = count;
 
         // put back the master timer
-        pkt_to_send->timer_slave = pkt_to_receive->timer_master;
+        pkt_from_centauro->timer_slave = pkt_to_centauro->timer_master;
         //send the message
-        if ( sendto ( s_send, pkt_to_send, BUFLEN_SLAVE_2_MASTER , 0 , ( struct sockaddr * ) &si_other, slen ) ==-1 ) {
+        if ( sendto ( s_send, pkt_from_centauro, BUFLEN_SLAVE_2_MASTER , 0 , ( struct sockaddr * ) &si_other, slen ) ==-1 ) {
             XBot::Logger::error ( "sendto()\n" );
             exit(1);
         }
@@ -117,7 +123,7 @@ int main ( void ) {
         }
         if ( FD_ISSET ( s_recv, &cset ) ) {
             //try to receive some data, this is a blocking call
-            if ( ( recv_len = recvfrom ( s_recv, pkt_to_receive, BUFLEN_MASTER_2_SLAVE, 0, ( struct sockaddr * ) &si_recv, &slen ) ) == -1 ) {
+            if ( ( recv_len = recvfrom ( s_recv, pkt_to_centauro, BUFLEN_MASTER_2_SLAVE, 0, ( struct sockaddr * ) &si_recv, &slen ) ) == -1 ) {
                 XBot::Logger::error ( "recvfrom()\n" );
             }
         }
@@ -132,11 +138,15 @@ int main ( void ) {
 //             retry = 0;
 
 
-        // write on exoskeleton_pipe
-        exoskeleton_pub.write(*pkt_to_receive);
-//         bytes = write ( exoskeleton_fd, ( void * ) pkt_to_receive, BUFLEN_MASTER_2_SLAVE );
+        pkt_to_centauro->r_position_x = count;
+        pkt_to_centauro->r_position_y = count + 10;
+        pkt_to_centauro->r_position_z = count + 20;
 
-//         usleep(1000); // 1 ms
+        // write on exoskeleton_pipe
+        exoskeleton_pub.write(*pkt_to_centauro);
+//         bytes = write ( exoskeleton_fd, ( void * ) pkt_to_centauro, BUFLEN_MASTER_2_SLAVE );
+
+        usleep(1000); // 1 ms
         count++;
     }
 
