@@ -10,10 +10,10 @@ namespace TomCentauroUDP {
             float run;
 
             // r is right
-            float r_position_x;
-            float r_position_y;
-            float r_position_z;
-            float r_rotation[9]; // column major ordered
+            double r_position_x;
+            double r_position_y;
+            double r_position_z;
+            double r_rotation[9]; // column major ordered
 
             // right hand
             float r_f0_position;
@@ -33,10 +33,10 @@ namespace TomCentauroUDP {
             float run;
 
             // 1 is right
-            float r_position_x;
-            float r_position_y;
-            float r_position_z;
-            float r_rotation[9]; // column major ordered
+            double r_position_x;
+            double r_position_y;
+            double r_position_z;
+            double r_rotation[9]; // column major ordered
 
             // right hand
             float r_f0_position;

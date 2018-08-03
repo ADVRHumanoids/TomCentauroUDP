@@ -109,11 +109,11 @@ int main ( void ) {
         robot_sub.read(*pkt_slave_to_master);
 //         int bytes = read ( robot_fd, ( void * ) pkt_slave_to_master, BUFLEN_SLAVE_2_MASTER );
 
-        XBot::Logger::info () << "Cnt: " <<
-                              pkt_slave_to_master->r_position_x << " " <<
-                              pkt_slave_to_master->r_position_y << " " <<
-                              pkt_slave_to_master->r_position_z << " " <<
-                              XBot::Logger::endl();
+//         XBot::Logger::info () << "Cnt: " <<
+//                               pkt_slave_to_master->r_position_x << " " <<
+//                               pkt_slave_to_master->r_position_y << " " <<
+//                               pkt_slave_to_master->r_position_z << " " <<
+//                               XBot::Logger::endl();
 
         pkt_slave_to_master->timer_master = count;
 
@@ -152,14 +152,19 @@ int main ( void ) {
 //             retry = 0;
 
 
-//         pkt_master_to_slave->r_position_x = count;
-//         pkt_master_to_slave->r_position_y = count + 10;
-//         pkt_master_to_slave->r_position_z = count + 20;
-
       XBot::Logger::info () << "Tom: " <<
 		    pkt_master_to_slave->r_position_x << " " <<
 		    pkt_master_to_slave->r_position_y << " " <<
 		    pkt_master_to_slave->r_position_z << " " <<
+		    pkt_master_to_slave->r_rotation[0]<< " " <<
+		    pkt_master_to_slave->r_rotation[1]<< " " <<
+		    pkt_master_to_slave->r_rotation[2]<< " " <<
+		    pkt_master_to_slave->r_rotation[3]<< " " <<
+		    pkt_master_to_slave->r_rotation[4]<< " " <<
+		    pkt_master_to_slave->r_rotation[5]<< " " <<
+		    pkt_master_to_slave->r_rotation[6]<< " " <<
+		    pkt_master_to_slave->r_rotation[7]<< " " <<
+		    pkt_master_to_slave->r_rotation[8]<< " " <<
 		    XBot::Logger::endl();
 
         // write on exoskeleton_pipe
