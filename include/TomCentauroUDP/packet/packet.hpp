@@ -99,8 +99,72 @@ namespace TomCentauroUDP {
             double torque_z;
             
         };
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        /// Teleopman2ToM
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        struct Teleopman2ToM
+        {
+        /// packet information
+            float timestamp_slave;   // time stamp of this packet
+            u_int packet_id;         // packet id
+
+        /// control mode
+            int teleopman_mode; // the control mode of the teleop-man: 1 = cartesian impedance control, 2 = joint impedance control, 3. cartesian position/velocity control ....
+            int hand_mode;
+
+        /// Cartesian Space EE Feedback
+            double position_ee[3];   // current end-effector position of the Teleop-Man: frame{teleop_link5}
+            double quaternion_ee[4]; // current end-effector orientation (expressed by quaternion) of the Teleop-Man: frame{teleop_link5}
+            double cmd_position_ee[3]; // last commanded position for the IK controller (input to IK solver)
+            double cmd_quaternion_ee[4]; // last commanded orientation for the IK controller (input to IK solver)
+
+        /// Joint Space Feedback
+            double q[5];             // joint position of the Teleop-Man
+            double torque[5];        // joint torque of the Teleop-Man
+
+        /// F/T wrist sensor information
+            double force[3];         // the force (Cartesian) sensed by the F/T sensor installed on the wrist
+            double torque[3];        // the torque (Cartesian) sensed by the F/T sensor installed on the wrist
+
+        /// Hand information
+            double torque_fingers[4]; // the actuator torque for each finger. (Do we have 4 fingers?)
+            double q_fingers[4];      // the actuator position for each finger.
+            double position_tip_fingers1[3]; // the cartesian tip position of the first finger (Thumb)
+            double position_tip_fingers2[3]; // the cartesian tip position of the second finger (index)
+            double position_tip_fingers3[3]; // the cartesian tip position of the third finger (middle)
+            double position_tip_fingers4[3]; // the cartesian tip position of the fourth finger (ring?)
+
+        /// Pressure hand sensor information
+            double pressure_fingers[11];    // the pressure sensor data installed on each phalanx
+        };
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        /// ToM2Teleopman
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        struct ToM2Teleopman
+        {
+        /// packet information
+            float timestamp_slave;   // time stamp of this packet
+            u_int packet_id;         // packet id
+
+        /// Cartesian Space EE Feedback
+            double position_ee[3];   // end-effector position of the Teleop-Man: frame{teleop_link5}
+            double quaternion_ee[4]; // end-effector orientation of the Teleop-Man. expressed in quaternion
+
+        /// Joint Space Feedback
+            double q[5];             // joint position of the Teleop-Man
+            double torque[5];        // joint torque of the Teleop-Man
+
+        /// Hand information
+            double closure_cmd_fingers[4];  // how do we control the fingers?
+
+        };
     }
 }
-
 #endif // PACKETS_H
 
