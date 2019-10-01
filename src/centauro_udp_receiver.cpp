@@ -24,8 +24,6 @@
 int main ( void ) {
     // set the logger verbosity
     XBot::Logger::SetVerbosityLevel(XBot::Logger::Severity::LOW);
-    
-//     XBot::Logger::info () << "Hello world!" << XBot::Logger::endl();
 
     // UDP related stuffs
     struct sockaddr_in si_me, si_other, si_recv;
@@ -97,9 +95,9 @@ int main ( void ) {
     pkt_slave_to_master->r_position_y = 0;
     pkt_slave_to_master->r_position_z = 0;
     
-    pkt_master_to_slave->r_position_x = 0;
-    pkt_master_to_slave->r_position_y = 0;
-    pkt_master_to_slave->r_position_z = 0;
+    pkt_master_to_slave->r_ref_position_x = 0;
+    pkt_master_to_slave->r_ref_position_y = 0;
+    pkt_master_to_slave->r_ref_position_z = 0;
     
     //keep listening for data
     while ( 1 ) {
@@ -139,7 +137,8 @@ int main ( void ) {
         }
         else
 	{
-	  pkt_master_to_slave = (struct TomCentauroUDP::packet::master2slave *)pkt_slave_to_master;
+            // NOTE why this Nando?
+	  //pkt_master_to_slave = (struct TomCentauroUDP::packet::master2slave *)pkt_slave_to_master;
 	}
             
             // TBD otherwise try to receive some data, this is a not blocking call - trying to empty the buffer
@@ -152,20 +151,20 @@ int main ( void ) {
 //             retry = 0;
 
 
-      XBot::Logger::info () << "Tom: " <<
-		    pkt_master_to_slave->r_position_x << " " <<
-		    pkt_master_to_slave->r_position_y << " " <<
-		    pkt_master_to_slave->r_position_z << " " <<
-		    pkt_master_to_slave->r_rotation[0]<< " " <<
-		    pkt_master_to_slave->r_rotation[1]<< " " <<
-		    pkt_master_to_slave->r_rotation[2]<< " " <<
-		    pkt_master_to_slave->r_rotation[3]<< " " <<
-		    pkt_master_to_slave->r_rotation[4]<< " " <<
-		    pkt_master_to_slave->r_rotation[5]<< " " <<
-		    pkt_master_to_slave->r_rotation[6]<< " " <<
-		    pkt_master_to_slave->r_rotation[7]<< " " <<
-		    pkt_master_to_slave->r_rotation[8]<< " " <<
-		    XBot::Logger::endl();
+// // //       XBot::Logger::info () << "Tom: " <<
+// // // 		    pkt_master_to_slave->r_position_x << " " <<
+// // // 		    pkt_master_to_slave->r_position_y << " " <<
+// // // 		    pkt_master_to_slave->r_position_z << " " <<
+// // // 		    pkt_master_to_slave->r_rotation[0]<< " " <<
+// // // 		    pkt_master_to_slave->r_rotation[1]<< " " <<
+// // // 		    pkt_master_to_slave->r_rotation[2]<< " " <<
+// // // 		    pkt_master_to_slave->r_rotation[3]<< " " <<
+// // // 		    pkt_master_to_slave->r_rotation[4]<< " " <<
+// // // 		    pkt_master_to_slave->r_rotation[5]<< " " <<
+// // // 		    pkt_master_to_slave->r_rotation[6]<< " " <<
+// // // 		    pkt_master_to_slave->r_rotation[7]<< " " <<
+// // // 		    pkt_master_to_slave->r_rotation[8]<< " " <<
+// // // 		    XBot::Logger::endl();
 
         // write on exoskeleton_pipe
         exoskeleton_pub.write(*pkt_master_to_slave);

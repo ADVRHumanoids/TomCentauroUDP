@@ -38,7 +38,7 @@ include_directories(include ${XBotInterface_INCLUDE_DIRS})
 ########################################################################
 
 
-# set Xenomain flags if Xenomai is founded
+# set Xenomain flags if Xenomai is found
 if ( Xenomai_FOUND )
     # exe
     add_executable(tom_centauro_udp_receiver
