@@ -49,6 +49,11 @@ if ( Xenomai_FOUND )
         src/udp_receiver.cpp
     )
     set_xeno_flags(tom_udp_receiver)
+
+    add_executable(udp_test_sender
+        src/udp_test_sender.cpp
+    )
+
 else ()
     # exe
     add_executable(tom_udp_receiver
@@ -58,11 +63,13 @@ else ()
     add_executable(udp_test_sender
         src/udp_test_sender.cpp
     )
-    
+
+ 
 endif()
 
 target_link_libraries(udp_test_sender ${catkin_LIBRARIES})
 library_install(udp_test_sender 1 0 0)
+ 
 
 target_link_libraries(tom_udp_receiver ${XBotInterface_LIBRARIES})
 library_install(tom_udp_receiver 1 0 0)

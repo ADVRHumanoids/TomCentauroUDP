@@ -122,7 +122,8 @@ int main(int argc, char** argv)
             die("sendto()");
         }
         
-        std::cout << pkt->packet_id << std::endl;
+        std::cout << seq_id << std::endl;
+    
         
         seq_id++;
     };

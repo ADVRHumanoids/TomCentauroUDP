@@ -127,11 +127,10 @@ int main ( void ) {
         int bytes = robot_sub.read(*pkt_slave_to_master);
         
         if(bytes == 0) {
-            usleep(100000);
+            //usleep(100000);
+            //XBot::Logger::warning ( "Cannot recv from robot pipe\n" );
             continue;
         }
-        
-        std::cout << pkt_slave_to_master << std::endl;
         
         //send the message
         if ( sendto ( s_send, pkt_slave_to_master, BUFLEN_SLAVE_2_MASTER , 0 , ( struct sockaddr * ) &si_other, slen ) == -1 ) {
@@ -151,13 +150,13 @@ int main ( void ) {
                 XBot::Logger::error ( "recvfrom()\n" );
             }
             else {
-                
+              
                 // write on exoskeleton_pipe
                 exoskeleton_pub.write(*pkt_master_to_slave);
             }
         }
         else {
-            //TBD?
+//             XBot::Logger::error ( "FD_ISSET FALSE\n" );
         }
 
 
