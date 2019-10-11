@@ -31,7 +31,7 @@ endif()
 
 find_package(XBotInterface REQUIRED)
 find_package(catkin REQUIRED roscpp 
-                             geometry_msgs
+                             robot_state_publisher 
                              eigen_conversions
                              )
 
@@ -71,7 +71,7 @@ target_link_libraries(udp_test_sender ${catkin_LIBRARIES})
 library_install(udp_test_sender 1 0 0)
  
 
-target_link_libraries(tom_udp_receiver ${XBotInterface_LIBRARIES})
+target_link_libraries(tom_udp_receiver ${XBotInterface_LIBRARIES} ${catkin_LIBRARIES})
 library_install(tom_udp_receiver 1 0 0)
 
 
