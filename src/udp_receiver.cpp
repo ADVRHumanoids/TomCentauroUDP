@@ -9,19 +9,23 @@
 #include <unistd.h>
 #include <sched.h>
 
+#include <ros/ros.h>
+#include <centauro_tools/HeriHand.h>
+#include <centauro_tools/HeriHandControl.h>
+
 #include <TomCentauroUDP/packet/packet.hpp>
 
 #include <XBotInterface/Utils.h>
 #include <XBotCore-interfaces/XDomainCommunication.h>
 
-#define ADDRESS_OTHER "127.0.0.1"
-#define ADDRESS_ME "127.0.0.1"
+#define ADDRESS_OTHER "192.168.0.100"
+#define ADDRESS_ME "192.168.0.200"
 
 #define BUFLEN_MASTER_2_SLAVE sizeof(TomCentauroUDP::packet::ToM2Teleopman)
 #define BUFLEN_SLAVE_2_MASTER sizeof(TomCentauroUDP::packet::Teleopman2ToM)
 
-#define PORT_ME 5000   //The port on which to listen for incoming data
-#define PORT_OTHER 5001   //The port on which to listen for incoming data
+#define PORT_ME 2001   //The port on which to listen for incoming data
+#define PORT_OTHER 2002   //The port on which to listen for incoming data
 
 char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen)
 {
@@ -44,7 +48,76 @@ char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen)
     return s;
 }
 
-int main ( void ) {
+double current_1, current_2, current_3, current_4;
+double q_1, q_2, q_3, q_4;
+double analogs_1_1, analogs_1_2, analogs_1_3;
+double analogs_2_1, analogs_2_2, analogs_2_3;
+double analogs_3_1, analogs_3_2, analogs_3_3;
+double analogs_4_1, analogs_4_2, analogs_4_3;
+
+
+
+void heriCallback (const centauro_tools::HeriHandState::ConstPtr & msg) {
+    
+    current_1 = msg->finger_1.current;
+    current_2 = msg->finger_2.current;
+    current_3 = msg->finger_3.current;
+    current_4 = msg->finger_4.current;
+    
+    q_1 = msg->finger_1.motor_position;
+    q_2 = msg->finger_2.motor_position;
+    q_3 = msg->finger_3.motor_position;
+    q_4 = msg->finger_4.motor_position;
+    
+    analogs_1_1 = msg->finger_1.analogs.analog_1;
+    analogs_1_2 = msg->finger_1.analogs.analog_2;
+    analogs_1_3 = msg->finger_1.analogs.analog_3;
+    
+    analogs_2_1 = msg->finger_2.analogs.analog_1;
+    analogs_2_2 = msg->finger_2.analogs.analog_2;
+    analogs_2_3 = msg->finger_2.analogs.analog_3;
+    
+    analogs_3_1 = msg->finger_3.analogs.analog_1;
+    analogs_3_2 = msg->finger_3.analogs.analog_2;
+    analogs_3_3 = msg->finger_3.analogs.analog_3;
+    
+    analogs_4_1 = msg->finger_4.analogs.analog_1;
+    analogs_4_2 = msg->finger_4.analogs.analog_2;
+    analogs_4_3 = msg->finger_4.analogs.analog_3;
+    
+
+}
+
+void fill_heri_hand(struct TomCentauroUDP::packet::Teleopman2ToM* pkt) {
+    pkt->i_fingers[0] = current_1;
+    pkt->i_fingers[1] = current_2;
+    pkt->i_fingers[2] = current_3;
+    pkt->i_fingers[3] = current_4;
+    
+    pkt->q_fingers[0] = q_1;
+    pkt->q_fingers[1] = q_2;
+    pkt->q_fingers[2] = q_3;
+    pkt->q_fingers[3] = q_4;
+    
+    pkt->pressure_fingers[0] = analogs_1_1;
+    pkt->pressure_fingers[1] = analogs_1_2;
+    pkt->pressure_fingers[2] = analogs_1_3;
+    pkt->pressure_fingers[3] = analogs_2_1;
+    pkt->pressure_fingers[4] = analogs_2_2;
+    pkt->pressure_fingers[5] = analogs_2_3;
+    pkt->pressure_fingers[6] = analogs_3_1;
+    pkt->pressure_fingers[7] = analogs_3_2;
+    pkt->pressure_fingers[8] = analogs_3_3;
+    pkt->pressure_fingers[9] = analogs_4_1;
+    pkt->pressure_fingers[10] = analogs_4_2;
+    pkt->pressure_fingers[11] = analogs_4_3;
+
+}
+
+int main ( int argc, char* argv[] ) {
+    
+    ros::init(argc, argv, "udp_receiver");
+    ros::NodeHandle nh;
 
     // UDP related stuffs
     struct sockaddr_in si_me, si_other, si_recv;
@@ -112,6 +185,8 @@ int main ( void ) {
     std::cout << "OTHER: " << get_ip_str(( struct sockaddr * ) &si_other, t, 1000) << ":" << ntohs( si_other.sin_port) << std::endl;
     std::cout << "ME: " << get_ip_str(( struct sockaddr * ) &si_me, t, 1000) << ":" << ntohs( si_me.sin_port) << std::endl;
 
+    ros::Subscriber sub = nh.subscribe("heri_hand_state", 1, heriCallback);
+    ros::Publisher pub = nh.advertise<centauro_tools::HeriHandControl>("heri_hand_control", 100);
 
     int count = 0;
     int retry = 0;
@@ -119,6 +194,8 @@ int main ( void ) {
     // clear the data struct
     memset ( pkt_master_to_slave, 0, sizeof ( *pkt_master_to_slave ) );
     memset ( pkt_slave_to_master, 0, sizeof ( *pkt_slave_to_master ) );
+    
+    centauro_tools::HeriHandControl heri_ctrl_msg;
     
     //keep listening for data
     while ( 1 ) {
@@ -132,11 +209,19 @@ int main ( void ) {
             continue;
         }
         
+        // fill the missing fields
+        pkt_slave_to_master->packet_id = count;
+        // TODO timer
+        
+        fill_heri_hand(pkt_slave_to_master);
+        
         //send the message
         if ( sendto ( s_send, pkt_slave_to_master, BUFLEN_SLAVE_2_MASTER , 0 , ( struct sockaddr * ) &si_other, slen ) == -1 ) {
             perror("sendto()");
             exit(1);
         }
+        else
+            XBot::Logger::info("sending");
 
         FD_ZERO ( &cset );
         FD_SET ( s_recv, &cset );
@@ -151,16 +236,33 @@ int main ( void ) {
             }
             else {
               
+                XBot::Logger::info("receiving\n");
                 // write on exoskeleton_pipe
                 exoskeleton_pub.write(*pkt_master_to_slave);
+                
+                // command the HERI hand 
+                heri_ctrl_msg.primitive = "finger_1";
+                heri_ctrl_msg.percentage = pkt_master_to_slave->ref_closure_fingers[0];
+                pub.publish(heri_ctrl_msg);
+                
+                heri_ctrl_msg.primitive = "finger_2";
+                heri_ctrl_msg.percentage = pkt_master_to_slave->ref_closure_fingers[1];
+                pub.publish(heri_ctrl_msg);
+                
+                heri_ctrl_msg.primitive = "finger_3";
+                heri_ctrl_msg.percentage = pkt_master_to_slave->ref_closure_fingers[2];
+                pub.publish(heri_ctrl_msg);
+                
+                heri_ctrl_msg.primitive = "finger_4";
+                heri_ctrl_msg.percentage = pkt_master_to_slave->ref_closure_fingers[3];
+                pub.publish(heri_ctrl_msg);
             }
         }
         else {
-//             XBot::Logger::error ( "FD_ISSET FALSE\n" );
+             XBot::Logger::error ( "FD_ISSET FALSE\n" );
         }
 
-
-
+        ros::spinOnce();
         // TBD check!
         usleep(1000); // 1 ms
         count++;
