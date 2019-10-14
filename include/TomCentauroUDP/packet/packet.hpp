@@ -8,7 +8,8 @@ namespace TomCentauroUDP {
         /// Teleopman2ToM
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        struct __attribute__((__packed__))Teleopman2ToM
+        //struct __attribute__((__packed__))Teleopman2ToM
+        struct Teleopman2ToM
         {
         /// packet information
             float timestamp_master;   // time stamp of this packet
@@ -46,7 +47,8 @@ namespace TomCentauroUDP {
         /// ToM2Teleopman
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        struct __attribute__((__packed__))ToM2Teleopman
+        //struct __attribute__((__packed__))ToM2Teleopman
+        struct ToM2Teleopman
         {
         /// packet information
             float timestamp_master;   // time stamp of this packet

@@ -18,8 +18,11 @@
 #include <XBotInterface/Utils.h>
 #include <XBotCore-interfaces/XDomainCommunication.h>
 
-#define ADDRESS_OTHER "192.168.0.100"
-#define ADDRESS_ME "192.168.0.200"
+//#define ADDRESS_OTHER "192.168.0.100"
+//#define ADDRESS_ME "192.168.0.200"
+
+#define ADDRESS_OTHER "10.24.8.10"
+#define ADDRESS_ME "10.24.8.100"
 
 #define BUFLEN_MASTER_2_SLAVE sizeof(TomCentauroUDP::packet::ToM2Teleopman)
 #define BUFLEN_SLAVE_2_MASTER sizeof(TomCentauroUDP::packet::Teleopman2ToM)
@@ -235,7 +238,6 @@ int main ( int argc, char* argv[] ) {
                 XBot::Logger::error ( "recvfrom()\n" );
             }
             else {
-              
                 XBot::Logger::info("receiving\n");
                 // write on exoskeleton_pipe
                 exoskeleton_pub.write(*pkt_master_to_slave);
