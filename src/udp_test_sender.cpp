@@ -15,12 +15,14 @@
 
 #include <TomCentauroUDP/packet/packet.hpp>
  
-#define RECEIVER "127.0.0.1"
+//#define RECEIVER "127.0.0.1"
+#define RECEIVER "10.24.8.100"
 #define BUFLEN sizeof(TomCentauroUDP::packet::ToM2Teleopman)  //Max length of buffer
 
 #define BUFLEN_SLAVE_2_MASTER sizeof(TomCentauroUDP::packet::Teleopman2ToM)
 
-#define PORT_OTHER 5000   //The port on which to listen for incoming data
+//#define PORT_OTHER 5000   //The port on which to listen for incoming data
+#define PORT_OTHER 2001
 #define PORT_ME 5001   //The port on which to listen for incoming data
  
 void die(char *s)
