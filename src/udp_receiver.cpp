@@ -11,7 +11,7 @@
 
 #include <ros/ros.h>
 #include <centauro_tools/HeriHand.h>
-#include <centauro_tools/HeriHandControl.h>
+#include <centauro_tools/HeriHandFingersControl.h>
 
 #include <TomCentauroUDP/packet/packet.hpp>
 
@@ -21,7 +21,8 @@
 //#define ADDRESS_OTHER "192.168.0.100"
 //#define ADDRESS_ME "192.168.0.200"
 
-#define ADDRESS_OTHER "10.24.8.10"
+#define ADDRESS_OTHER "10.24.8.3"
+//#define ADDRESS_OTHER "10.24.8.100"
 #define ADDRESS_ME "10.24.8.100"
 
 #define BUFLEN_MASTER_2_SLAVE sizeof(TomCentauroUDP::packet::ToM2Teleopman)
@@ -189,7 +190,7 @@ int main ( int argc, char* argv[] ) {
     std::cout << "ME: " << get_ip_str(( struct sockaddr * ) &si_me, t, 1000) << ":" << ntohs( si_me.sin_port) << std::endl;
 
     ros::Subscriber sub = nh.subscribe("heri_hand_state", 1, heriCallback);
-    ros::Publisher pub = nh.advertise<centauro_tools::HeriHandControl>("heri_hand_control", 100);
+    ros::Publisher pub = nh.advertise<centauro_tools::HeriHandFingersControl>("heri_hand_fingers_control", 100);
 
     int count = 0;
     int retry = 0;
@@ -198,7 +199,7 @@ int main ( int argc, char* argv[] ) {
     memset ( pkt_master_to_slave, 0, sizeof ( *pkt_master_to_slave ) );
     memset ( pkt_slave_to_master, 0, sizeof ( *pkt_slave_to_master ) );
     
-    centauro_tools::HeriHandControl heri_ctrl_msg;
+    centauro_tools::HeriHandFingersControl heri_ctrl_msg;
     
     //keep listening for data
     while ( 1 ) {
@@ -223,8 +224,8 @@ int main ( int argc, char* argv[] ) {
             perror("sendto()");
             exit(1);
         }
-        else
-            XBot::Logger::info("sending");
+        //else
+            //XBot::Logger::info("sending");
 
         FD_ZERO ( &cset );
         FD_SET ( s_recv, &cset );
@@ -238,35 +239,28 @@ int main ( int argc, char* argv[] ) {
                 XBot::Logger::error ( "recvfrom()\n" );
             }
             else {
-                XBot::Logger::info("receiving\n");
+                
+                //XBot::Logger::info("receiving\n");
                 // write on exoskeleton_pipe
                 exoskeleton_pub.write(*pkt_master_to_slave);
                 
                 // command the HERI hand 
-                heri_ctrl_msg.primitive = "finger_1";
-                heri_ctrl_msg.percentage = pkt_master_to_slave->ref_closure_fingers[0];
+                heri_ctrl_msg.percentage_1 = pkt_master_to_slave->ref_closure_fingers[0];
+                heri_ctrl_msg.percentage_2 = pkt_master_to_slave->ref_closure_fingers[1];
+                heri_ctrl_msg.percentage_3 = pkt_master_to_slave->ref_closure_fingers[2];
+                heri_ctrl_msg.percentage_4 = pkt_master_to_slave->ref_closure_fingers[3];
+   
                 pub.publish(heri_ctrl_msg);
-                
-                heri_ctrl_msg.primitive = "finger_2";
-                heri_ctrl_msg.percentage = pkt_master_to_slave->ref_closure_fingers[1];
-                pub.publish(heri_ctrl_msg);
-                
-                heri_ctrl_msg.primitive = "finger_3";
-                heri_ctrl_msg.percentage = pkt_master_to_slave->ref_closure_fingers[2];
-                pub.publish(heri_ctrl_msg);
-                
-                heri_ctrl_msg.primitive = "finger_4";
-                heri_ctrl_msg.percentage = pkt_master_to_slave->ref_closure_fingers[3];
-                pub.publish(heri_ctrl_msg);
+
             }
         }
         else {
-             XBot::Logger::error ( "FD_ISSET FALSE\n" );
+             //XBot::Logger::error ( "FD_ISSET FALSE\n" );
         }
 
         ros::spinOnce();
         // TBD check!
-        usleep(1000); // 1 ms
+        //usleep(1000); // 1 ms
         count++;
     }
 
