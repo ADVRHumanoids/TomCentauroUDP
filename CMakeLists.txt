@@ -30,31 +30,49 @@ if ( ${ENABLE_XENO} )
 endif()
 
 find_package(XBotInterface REQUIRED)
+find_package(catkin REQUIRED roscpp 
+                             robot_state_publisher 
+                             eigen_conversions
+                             )
 
 # include 
-include_directories(include ${XBotInterface_INCLUDE_DIRS}) 
+include_directories(include ${XBotInterface_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS}) 
 
                                    
 ########################################################################
 
 
-# set Xenomain flags if Xenomai is founded
+# set Xenomain flags if Xenomai is found
 if ( Xenomai_FOUND )
     # exe
-    add_executable(tom_centauro_udp_receiver
-        src/centauro_udp_receiver.cpp
-        src/rt_ipc.cpp
+    add_executable(tom_udp_receiver
+        src/udp_receiver.cpp
     )
-    set_xeno_flags(tom_centauro_udp_receiver)
+    set_xeno_flags(tom_udp_receiver)
+
+    add_executable(udp_test_sender
+        src/udp_test_sender.cpp
+    )
+
 else ()
     # exe
-    add_executable(tom_centauro_udp_receiver
-        src/centauro_udp_receiver.cpp
+    add_executable(tom_udp_receiver
+        src/udp_receiver.cpp
     )
+    
+    add_executable(udp_test_sender
+        src/udp_test_sender.cpp
+    )
+
+ 
 endif()
 
-target_link_libraries(tom_centauro_udp_receiver ${XBotInterface_LIBRARIES})
-library_install(tom_centauro_udp_receiver 1 0 0)
+target_link_libraries(udp_test_sender ${catkin_LIBRARIES})
+library_install(udp_test_sender 1 0 0)
+ 
+
+target_link_libraries(tom_udp_receiver ${XBotInterface_LIBRARIES} ${catkin_LIBRARIES})
+library_install(tom_udp_receiver 1 0 0)
 
 
 ########################################################################
