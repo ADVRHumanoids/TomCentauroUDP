@@ -151,6 +151,14 @@ int main ( int argc, char* argv[] ) {
         exit(1);
     }
     
+    /// set the buffer size = 2 * packet's size from master
+    size_t send_buffer = BUFLEN_MASTER_2_SLAVE*2;
+    if (setsockopt(s_recv, SOL_SOCKET, SO_RCVBUF, &send_buffer, sizeof(send_buffer)) == -1){
+          //error
+         XBot::Logger::error ( "setsockopt()\n" );
+    }
+    XBot::Logger::info("size: %d\n", BUFLEN_MASTER_2_SLAVE);
+    
 //     TBD check if needed
      struct timeval read_timeout;
      read_timeout.tv_sec = 0;
