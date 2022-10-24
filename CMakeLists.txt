@@ -1,62 +1,39 @@
-# CMake minimum version and policies
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.19)
+project(tom_centauro_udp)
 
-# centauro UDP receiver
-project(TomCentauroUDP)
+find_package(roscpp REQUIRED)
+find_package(Eigen3 REQUIRED)
 
-# Add cmake dir and include custom macros
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-include(MacroOptionalBuild)
-include(MacroInstallLibrary)
+include_directories(include)
 
+# udp server and client library
+add_library(udp_server STATIC
+    src/udp_server.cpp)
 
-# C++11 
-include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
-check_cxx_compiler_flag("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
-if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-elseif(COMPILER_SUPPORTS_CXX0X)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-else()
-    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
+# test ros server
+add_executable(udp_server_ros
+    src/udp_server_ros.cpp)
+
+target_include_directories(udp_server_ros
+    PRIVATE ${roscpp_INCLUDE_DIRS})
+
+target_link_libraries(udp_server_ros
+    PRIVATE ${roscpp_LIBRARIES} udp_server Eigen3::Eigen)
+
+# test ros client
+add_executable(udp_client_ros
+    src/udp_client_ros.cpp)
+
+target_include_directories(udp_client_ros
+    PRIVATE ${roscpp_INCLUDE_DIRS})
+
+target_link_libraries(udp_client_ros
+    PRIVATE ${roscpp_LIBRARIES} udp_server Eigen3::Eigen)
+
+# xbot2 plugin
+find_package(xbot2 QUIET)
+
+if(${xbot2_FOUND})
+    add_xbot2_plugin(udp_server_plugin
+        src/udp_server_plugin.cpp)
 endif()
-
-# Enable Xenomai flag and if enabled find required packages
-set(ENABLE_XENO CACHE BOOL "ON")
-if ( ${ENABLE_XENO} )
-   find_package(Xenomai)
-   find_package(RTnet)
-endif()
-
-find_package(XBotInterface REQUIRED)
-
-# include 
-include_directories(include ${XBotInterface_INCLUDE_DIRS}) 
-
-                                   
-########################################################################
-
-
-# set Xenomain flags if Xenomai is founded
-if ( Xenomai_FOUND )
-    # exe
-    add_executable(tom_centauro_udp_receiver
-        src/centauro_udp_receiver.cpp
-        src/rt_ipc.cpp
-    )
-    set_xeno_flags(tom_centauro_udp_receiver)
-else ()
-    # exe
-    add_executable(tom_centauro_udp_receiver
-        src/centauro_udp_receiver.cpp
-    )
-endif()
-
-target_link_libraries(tom_centauro_udp_receiver ${XBotInterface_LIBRARIES})
-library_install(tom_centauro_udp_receiver 1 0 0)
-
-
-########################################################################
-
-
