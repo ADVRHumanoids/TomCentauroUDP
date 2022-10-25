@@ -98,6 +98,12 @@ int UdpServer::reply(const uint8_t *buffer, size_t size)
     return ret;
 }
 
+std::string UdpServer::get_last_client_address() const
+{
+    std::string addr = inet_ntoa(_cl_addr.sin_addr);
+    return addr + ":" + std::to_string(ntohs(_cl_addr.sin_port));
+}
+
 UdpClient::UdpClient()
 {
 

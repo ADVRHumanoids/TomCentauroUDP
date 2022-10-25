@@ -30,6 +30,9 @@ public:
     // blocking reply to last sender (i.e., client)
     int reply(const uint8_t * buffer, size_t size);
 
+    //
+    std::string get_last_client_address() const;
+
 private:
 
     int _fd;
