@@ -33,7 +33,8 @@ int main(int argc, char **argv)
 
     for(;;)
     {
-        ROS_INFO_THROTTLE(1.0, "recv %d  repl %d", nmsgs, nrepl);
+        ROS_INFO_THROTTLE(1.0, "recv %d  repl %d (%s)",
+                          nmsgs, nrepl, srv.get_last_client_address().c_str());
 
         int nbytes = srv.receive(reinterpret_cast<uint8_t*>(&packet_to_robot),
                                  sizeof(packet_to_robot));
