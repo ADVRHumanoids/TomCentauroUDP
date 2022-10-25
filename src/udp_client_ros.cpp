@@ -14,6 +14,13 @@ int main(int argc, char **argv)
     std::string addr = "127.0.0.1";
     int port = 8081;
 
+    std::string ee_id = "arm2_8";
+
+    if(argc > 1)
+    {
+        ee_id = argv[1];
+    }
+
     UdpClient cli;
     if(!cli.init(addr, port))
     {
@@ -23,28 +30,30 @@ int main(int argc, char **argv)
     bool got_msg_from_robot = false;
     int nrepl = 0;
 
-    std::string ee_id = "arm2_8";
+
     ros::Subscriber ee_sub = nh.subscribe<geometry_msgs::PoseStamped>(
                 "input_topic", 1,
                 [&](const auto& msg)
     {
-         tom_centauro_udp::packet::master2slave packet_to_robot;
+        ROS_INFO_THROTTLE(1, "got ros msg from input topic");
 
-         tom_centauro_udp::fill_pkt_ee_id(packet_to_robot, ee_id);
+        tom_centauro_udp::packet::master2slave packet_to_robot;
 
-         packet_to_robot.run = got_msg_from_robot;
+        tom_centauro_udp::fill_pkt_ee_id(packet_to_robot, ee_id);
 
-         tom_centauro_udp::fill_pkt_with_pose(packet_to_robot,
-                                              *msg);
+        packet_to_robot.run = got_msg_from_robot;
 
-         cli.send(reinterpret_cast<uint8_t*>(&packet_to_robot),
-                  sizeof(packet_to_robot));
+        tom_centauro_udp::fill_pkt_with_pose(packet_to_robot,
+                                             *msg);
 
-         tom_centauro_udp::packet::slave2master packet_from_robot;
+        cli.send(reinterpret_cast<uint8_t*>(&packet_to_robot),
+                 sizeof(packet_to_robot));
 
-         if(cli.try_receive(reinterpret_cast<uint8_t*>(&packet_from_robot),
-                            sizeof(packet_from_robot)))
-         {
+        tom_centauro_udp::packet::slave2master packet_from_robot;
+
+        if(cli.try_receive(reinterpret_cast<uint8_t*>(&packet_from_robot),
+                           sizeof(packet_from_robot)))
+        {
             got_msg_from_robot = true;
             nrepl++;
 
@@ -53,7 +62,7 @@ int main(int argc, char **argv)
 
             ROS_INFO_THROTTLE(1, "got %d replies from robot", nrepl);
             ROS_INFO_STREAM_THROTTLE(1, "" << pose);
-         }
+        }
     });
 
     ros::spin();
