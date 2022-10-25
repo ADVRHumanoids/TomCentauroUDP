@@ -21,10 +21,12 @@ int main(int argc, char **argv)
         exit(1);
     }
 
+    // ros-stuff to connect to ik
     std::map<std::string, ros::Publisher> ee_pub_map;
     std::map<std::string, ros::Subscriber> ee_sub_map;
     std::map<std::string, geometry_msgs::PoseStamped> ee_ref_map;
 
+    // packets declaration
     tom_centauro_udp::packet::master2slave packet_to_robot;
     tom_centauro_udp::packet::slave2master packet_to_teleop;
 
@@ -33,12 +35,15 @@ int main(int argc, char **argv)
 
     for(;;)
     {
-        ROS_INFO_THROTTLE(1.0, "recv %d  repl %d (%s)",
+        // periodically print statistics
+        ROS_INFO_THROTTLE(1.0, "recv %d  repl %d (client at %s)",
                           nmsgs, nrepl, srv.get_last_client_address().c_str());
 
+        // blocking receive
         int nbytes = srv.receive(reinterpret_cast<uint8_t*>(&packet_to_robot),
                                  sizeof(packet_to_robot));
 
+        // error handling
         if(nbytes != sizeof(packet_to_robot))
         {
             ROS_WARN("received %d != %d bytes", nbytes, sizeof(packet_to_robot));
@@ -81,7 +86,7 @@ int main(int argc, char **argv)
         // spin ros callbacks to get current reference
         ros::spinOnce();
 
-        // reply with current reference if we got one
+        // reply to client with current reference if we got one
         auto ref_it = ee_ref_map.find(ee_id);
 
         if(ref_it != ee_ref_map.end())
