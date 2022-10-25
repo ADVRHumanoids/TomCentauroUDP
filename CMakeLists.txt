@@ -31,12 +31,12 @@ target_link_libraries(${PROJECT_NAME}_client_ros
     PRIVATE ${roscpp_LIBRARIES} udp_server Eigen3::Eigen)
 
 # xbot2 plugin
-find_package(xbot2 QUIET)
+#find_package(xbot2 QUIET)
 
-if(${xbot2_FOUND})
-    add_xbot2_plugin(${PROJECT_NAME}_server_plugin
-        src/udp_server_plugin.cpp)
-endif()
+#if(${xbot2_FOUND})
+#    add_xbot2_plugin(${PROJECT_NAME}_server_plugin
+#        src/udp_server_plugin.cpp)
+#endif()
 
 install(TARGETS ${PROJECT_NAME}_server_ros ${PROJECT_NAME}_client_ros
     DESTINATION bin)
