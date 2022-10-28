@@ -30,6 +30,15 @@ target_include_directories(${PROJECT_NAME}_client_ros
 target_link_libraries(${PROJECT_NAME}_client_ros
     PRIVATE ${roscpp_LIBRARIES} udp_server Eigen3::Eigen)
 
+# test dummy tom client
+add_executable(${PROJECT_NAME}_dummy_client
+    src/udp_dummy_client.cpp)
+
+target_include_directories(${PROJECT_NAME}_dummy_client
+    PRIVATE ${roscpp_INCLUDE_DIRS})
+
+target_link_libraries(${PROJECT_NAME}_dummy_client
+    PRIVATE ${roscpp_LIBRARIES} udp_server Eigen3::Eigen)
 # xbot2 plugin
 #find_package(xbot2 QUIET)
 
