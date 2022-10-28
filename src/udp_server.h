@@ -52,7 +52,7 @@ public:
     bool init(std::string addr, int port);
 
     // send
-    int send(uint8_t * buffer, size_t size);
+    int try_send(uint8_t * buffer, size_t size);
 
     // non-blocking receive
     int try_receive(uint8_t * buffer, size_t size);

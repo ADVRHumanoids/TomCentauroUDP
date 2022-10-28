@@ -29,7 +29,9 @@ struct __attribute__((packed)) master2slave
     float gripper_force;
 
     // simple check code
-    uint32_t magic_code = 0xdeadbeef;
+    uint32_t magic_code = expected_magic_code;
+
+    static constexpr uint32_t expected_magic_code = 0xdeadbeef;
 };
 
 
@@ -57,7 +59,9 @@ struct __attribute__((packed)) slave2master
     float gripper_force;
 
     // simple check code
-    uint32_t magic_code = 0xbadf00d;
+    uint32_t magic_code = expected_magic_code;
+
+    static constexpr uint32_t expected_magic_code = 0xbadf00d;
 };
 
 } }

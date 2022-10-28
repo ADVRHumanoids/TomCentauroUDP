@@ -136,18 +136,19 @@ bool UdpClient::init(std::string addr, int port)
     return true;
 }
 
-int UdpClient::send(uint8_t *buffer, size_t size)
+int UdpClient::try_send(uint8_t *buffer, size_t size)
 {
     socklen_t sv_addr_size = sizeof(_sv_addr);
 
     int ret = ::sendto(_fd,
                        buffer,
                        size,
-                       MSG_CONFIRM,
+                       MSG_DONTWAIT,
                        (const struct sockaddr *)&_sv_addr,
                        sv_addr_size);
 
-    if(ret == -1)
+    if(ret == -1 &&
+            (errno != EAGAIN || errno != EWOULDBLOCK))
     {
         perror("sendto failed");
     }
@@ -162,12 +163,12 @@ int UdpClient::try_receive(uint8_t *buffer, size_t size)
     int ret = ::recvfrom(_fd,
                          buffer,
                          size,
-                         MSG_WAITALL,
+                         MSG_DONTWAIT,
                          (struct sockaddr *)&_sv_addr,
                          &sv_addr_size);
 
     if(ret == -1 &&
-            (errno != EAGAIN || errno == EWOULDBLOCK))
+            (errno != EAGAIN || errno != EWOULDBLOCK))
     {
         perror("recvfrom failed");
     }

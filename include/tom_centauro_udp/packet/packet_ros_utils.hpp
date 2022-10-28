@@ -8,6 +8,16 @@
 namespace tom_centauro_udp
 {
 
+bool check_pkt_valid(const packet::master2slave& pkt)
+{
+    return pkt.magic_code == pkt.expected_magic_code;
+}
+
+bool check_pkt_valid(const packet::slave2master& pkt)
+{
+    return pkt.magic_code == pkt.expected_magic_code;
+}
+
 template <typename packet_t>
 void fill_pkt_ee_id(packet_t& pkt,
                     const std::string& ee_id)
