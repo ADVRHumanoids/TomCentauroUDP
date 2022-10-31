@@ -10,6 +10,6 @@ ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
 RUN forest init
 RUN echo "source $PWD/setup.bash" >> /home/user/.bashrc
 RUN forest add-recipes git@github.com:advrhumanoids/multidof_recipes.git --tag master 
-RUN forest grow tom_centauro_udp -j4
-RUN forest grow iit-centauro-ros-pkg -j4 --pwd user
+RUN echo 0 && forest grow iit-centauro-ros-pkg -j4 --pwd user
+RUN echo 1 && forest grow tom_centauro_udp -j4
 

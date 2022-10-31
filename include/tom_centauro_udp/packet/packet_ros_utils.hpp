@@ -47,8 +47,6 @@ void fill_pkt_with_pose(packet_t& pkt,
 
     q.normalize();
 
-    // Eigen::Matrix3f::Map(pkt.rotation) = q.toRotationMatrix();
-
     pkt.rotation[0] = q.w();
     pkt.rotation[1] = q.x();
     pkt.rotation[2] = q.y();

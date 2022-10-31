@@ -13,7 +13,7 @@ struct __attribute__((packed)) master2slave
 {
     float timer_master;
     float timer_slave;
-    bool run;  // it true, cmd is actually sent to ik
+    bool run;  // should slave execute this command?
 
     // ee URDF name
     char ee_id[16];  // up to 15 chars + null-termination
@@ -22,7 +22,6 @@ struct __attribute__((packed)) master2slave
     float position_x;
     float position_y;
     float position_z;
-    //float rotation[9];    // column major ordering
     float rotation[4];      // quaternion (w, xi, yj, zk)
 
     // hand command (desired pos, desired force?)
@@ -50,7 +49,7 @@ struct __attribute__((packed)) slave2master
 {
     float timer_master;
     float timer_slave;
-    bool run;  // what is this for ?
+    bool run;  // master is executing commands
 
     // ee URDF name
     char ee_id[16];  // up to 15 chars + null-termination
@@ -59,7 +58,6 @@ struct __attribute__((packed)) slave2master
     float position_x;
     float position_y;
     float position_z;
-    //float rotation[9];    // column major ordering
     float rotation[4];      // quaternion (w, xi, yj, zk)
 
     // hand feedback
