@@ -1,11 +1,11 @@
 #include "udp_server.h"
 
-UdpServer::UdpServer()
+UdpServerRaw::UdpServerRaw()
 {
 
 }
 
-bool UdpServer::bind(std::string addr, int port)
+bool UdpServerRaw::bind(std::string addr, int port)
 {
     // create socket file descriptor
     _fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -40,7 +40,7 @@ bool UdpServer::bind(std::string addr, int port)
     return true;
 }
 
-int UdpServer::receive(uint8_t *buffer, size_t size)
+int UdpServerRaw::receive(uint8_t *buffer, size_t size)
 {
     socklen_t cl_addr_size = sizeof(_cl_addr);
 
@@ -59,7 +59,7 @@ int UdpServer::receive(uint8_t *buffer, size_t size)
     return ret;
 }
 
-int UdpServer::try_receive(uint8_t *buffer, size_t size)
+int UdpServerRaw::try_receive(uint8_t *buffer, size_t size)
 {
     socklen_t cl_addr_size = sizeof(_cl_addr);
 
@@ -79,7 +79,7 @@ int UdpServer::try_receive(uint8_t *buffer, size_t size)
     return ret;
 }
 
-int UdpServer::reply(const uint8_t *buffer, size_t size)
+int UdpServerRaw::reply(const uint8_t *buffer, size_t size)
 {
     socklen_t cl_addr_size = sizeof(_cl_addr);
 
@@ -98,18 +98,18 @@ int UdpServer::reply(const uint8_t *buffer, size_t size)
     return ret;
 }
 
-std::string UdpServer::get_last_client_address() const
+std::string UdpServerRaw::get_last_client_address() const
 {
     std::string addr = inet_ntoa(_cl_addr.sin_addr);
     return addr + ":" + std::to_string(ntohs(_cl_addr.sin_port));
 }
 
-UdpClient::UdpClient()
+UdpClientRaw::UdpClientRaw()
 {
 
 }
 
-bool UdpClient::init(std::string addr, int port)
+bool UdpClientRaw::init(std::string addr, int port)
 {
     // create socket file descriptor
     _fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -136,7 +136,7 @@ bool UdpClient::init(std::string addr, int port)
     return true;
 }
 
-int UdpClient::try_send(uint8_t *buffer, size_t size)
+int UdpClientRaw::try_send(const uint8_t *buffer, size_t size)
 {
     socklen_t sv_addr_size = sizeof(_sv_addr);
 
@@ -156,7 +156,7 @@ int UdpClient::try_send(uint8_t *buffer, size_t size)
     return ret;
 }
 
-int UdpClient::try_receive(uint8_t *buffer, size_t size)
+int UdpClientRaw::try_receive(uint8_t *buffer, size_t size)
 {
     socklen_t sv_addr_size = sizeof(_sv_addr);
 

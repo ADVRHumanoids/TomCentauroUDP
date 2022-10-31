@@ -9,19 +9,20 @@
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "tom_centauro_udp_client");
-    ros::NodeHandle n;
+    ros::NodeHandle n("~");
 
-    std::string addr = "127.0.0.1";
-    int port = 8081;
+    std::string addr = n.param<std::string>("addr", "127.0.0.1");
+    int port = n.param("port", 8081);
 
-    std::string ee_id = "arm2_8";
+    std::string ee_id = n.param<std::string>("ee_id", "arm2_8");
 
-    if(argc > 1)
-    {
-        ee_id = argv[1];
-    }
+    double v_x = n.param("v_x", 0.0);
+    double v_y = n.param("v_y", 0.0);
+    double v_yaw = n.param("v_yaw", 0.0);
 
-    UdpClientRaw cli;
+    UdpClient<tom_centauro_udp::packet::slave2master,
+              tom_centauro_udp::packet::master2slave> cli;
+
     if(!cli.init(addr, port))
     {
         exit(1);
@@ -39,12 +40,10 @@ int main(int argc, char **argv)
     {
         ROS_INFO_THROTTLE(1, "waiting for server to reply..");
 
-        cli.try_send(reinterpret_cast<uint8_t*>(&packet_to_robot),
-                     sizeof(packet_to_robot));
+        cli.try_send(packet_to_robot);
 
         packet_from_robot.magic_code = 0;
-        if(cli.try_receive(reinterpret_cast<uint8_t*>(&packet_from_robot),
-                           sizeof(packet_from_robot)) > 0)
+        if(cli.try_receive(packet_from_robot))
         {
             if(!tom_centauro_udp::check_pkt_valid(packet_from_robot))
             {
@@ -68,33 +67,25 @@ int main(int argc, char **argv)
     // set run to true
     packet_to_robot.run = true;
 
-    geometry_msgs::PoseStamped initial_pose;
-    tom_centauro_udp::get_pose_from_pkt(packet_from_robot, initial_pose);
-    std::cout << "initial pose for " << packet_from_robot.ee_id << " received: \n" << initial_pose << "\n";
+    // set velocity control
+    packet_to_robot.velocity_ctrl = true;
 
     double t = 0;
-    const double dt = 0.001;
-    const double period = 3.0;
-    const double amplitude = 0.1;
+    double dt = 0.001;
     int nrepl = 0;
 
     for(;;)
     {
-        // fill pose to send
-        geometry_msgs::PoseStamped pose_to_send = initial_pose;
-        pose_to_send.pose.position.z += amplitude*std::sin(2*M_PI*t/period);
-
-        tom_centauro_udp::fill_pkt_with_pose(packet_to_robot,
-                                             pose_to_send);
+        packet_to_robot.vel_xy[0] = v_x;
+        packet_to_robot.vel_xy[1] = v_y;
+        packet_to_robot.vel_yaw = v_yaw;
 
         // send command to slave
-        cli.try_send(reinterpret_cast<uint8_t*>(&packet_to_robot),
-                     sizeof(packet_to_robot));
+        cli.try_send(packet_to_robot);
 
         // try receive from robot
         packet_from_robot.magic_code = 0;
-        if(cli.try_receive(reinterpret_cast<uint8_t*>(&packet_from_robot),
-                           sizeof(packet_from_robot)) > 0)
+        if(cli.try_receive(packet_from_robot))
         {
             if(!tom_centauro_udp::check_pkt_valid(packet_from_robot))
             {

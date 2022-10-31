@@ -11,12 +11,12 @@
 
 #include <string>
 
-class UdpServer
+class UdpServerRaw
 {
 
 public:
 
-    UdpServer();
+    UdpServerRaw();
 
     // bind to local address/port
     bool bind(std::string addr, int port);
@@ -41,18 +41,50 @@ private:
 
 };
 
-class UdpClient
+template <typename rx_t, typename tx_t>
+class UdpServer : protected UdpServerRaw
 {
 
 public:
 
-    UdpClient();
+    using UdpServerRaw::bind;
+
+    using UdpServerRaw::get_last_client_address;
+
+    // blocking receive
+    bool receive(rx_t& msg)
+    {
+        return UdpServerRaw::receive(reinterpret_cast<uint8_t*>(&msg),
+                                     sizeof(msg)) == sizeof(msg);
+    }
+
+    // non-blocking receive
+    bool try_receive(rx_t& msg)
+    {
+        return UdpServerRaw::try_receive(reinterpret_cast<uint8_t*>(&msg),
+                                         sizeof(msg)) == sizeof(msg);
+    }
+
+    // blocking reply to last sender (i.e., client)
+    int reply(const tx_t& msg)
+    {
+        return UdpServerRaw::reply(reinterpret_cast<const uint8_t*>(&msg),
+                                   sizeof(msg)) == sizeof(msg);
+    }
+};
+
+class UdpClientRaw
+{
+
+public:
+
+    UdpClientRaw();
 
     // initialize with remote server addr
     bool init(std::string addr, int port);
 
     // send
-    int try_send(uint8_t * buffer, size_t size);
+    int try_send(const uint8_t * buffer, size_t size);
 
     // non-blocking receive
     int try_receive(uint8_t * buffer, size_t size);
@@ -63,5 +95,32 @@ private:
     sockaddr_in _sv_addr;
 
 };
+
+
+template <typename rx_t, typename tx_t>
+class UdpClient : protected UdpClientRaw
+{
+
+public:
+
+    // initialize with remote server addr
+    using UdpClientRaw::init;
+
+    // send
+    bool try_send(const tx_t& msg)
+    {
+        return UdpClientRaw::try_send(reinterpret_cast<const uint8_t*>(&msg),
+                                      sizeof(msg)) == sizeof(msg);
+    }
+
+    // non-blocking receive
+    bool try_receive(rx_t& msg)
+    {
+        return UdpClientRaw::try_receive(reinterpret_cast<uint8_t*>(&msg),
+                                         sizeof(msg)) == sizeof(msg);
+    }
+
+};
+
 
 #endif // UDP_SERVER_H

@@ -31,7 +31,7 @@
             <arg name="tf_prefix" value="$(arg tf_prefix)"/>
         </include>
 
-        <node if="$(arg gui)" pkg="rviz" type="rviz" name="rviz_centauro" args="-d $(find centauro_cartesio)/configs/rviz/centauro_collision.rviz"/>
+        <node if="$(arg gui)" pkg="rviz" type="rviz" name="rviz_centauro" args="-d $(find tom_centauro)/launch/centauro.rviz"/>
 
     </group>
 
