@@ -11,14 +11,20 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "tom_centauro_udp_client");
     ros::NodeHandle n("~");
 
+    if(argc != 5)
+    {
+        ROS_INFO("usage %s ee_id vx vy vyaw", argv[0]);
+        exit(1);
+    }
+
     std::string addr = n.param<std::string>("addr", "127.0.0.1");
     int port = n.param("port", 8081);
 
-    std::string ee_id = n.param<std::string>("ee_id", "arm2_8");
+    std::string ee_id = argv[1];
 
-    double v_x = n.param("v_x", 0.0);
-    double v_y = n.param("v_y", 0.0);
-    double v_yaw = n.param("v_yaw", 0.0);
+    double v_x = std::stod(argv[2]);
+    double v_y = std::stod(argv[3]);
+    double v_yaw = std::stod(argv[4]);
 
     UdpClient<tom_centauro_udp::packet::slave2master,
               tom_centauro_udp::packet::master2slave> cli;
