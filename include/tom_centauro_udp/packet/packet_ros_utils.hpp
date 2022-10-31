@@ -10,7 +10,35 @@ namespace tom_centauro_udp
 
 bool check_pkt_valid(const packet::master2slave& pkt)
 {
-    return pkt.magic_code == pkt.expected_magic_code;
+    if(pkt.magic_code != pkt.expected_magic_code)
+    {
+        printf("invalid magic code \n");
+        return false;
+    }
+
+    if(!pkt.run)
+    {
+        return true;
+    }
+
+    if(std::fabs(pkt.vel_xy[0]) > 1.0 ||
+            std::fabs(pkt.vel_xy[1]) > 1.0 ||
+            std::fabs(pkt.vel_yaw) > 1.0)
+    {
+        printf("invalid vel command (out of range) \n");
+        return false;
+    }
+
+    float quat_norm = Eigen::Vector4f::Map(pkt.rotation).norm();
+
+    if(!pkt.velocity_ctrl &&
+            (quat_norm < 0.99 || quat_norm > 1.01))
+    {
+        printf("invalid quaternion norm \n");
+        return false;
+    }
+
+    return true;
 }
 
 bool check_pkt_valid(const packet::slave2master& pkt)
@@ -71,10 +99,10 @@ void get_pose_from_pkt(packet_t& pkt,
 
     q.normalize();
 
-    pose.pose.orientation.x = q.w();
-    pose.pose.orientation.y = q.x();
-    pose.pose.orientation.z = q.y();
-    pose.pose.orientation.w = q.z();
+    pose.pose.orientation.x = q.x();
+    pose.pose.orientation.y = q.y();
+    pose.pose.orientation.z = q.z();
+    pose.pose.orientation.w = q.w();
 }
 
 }
