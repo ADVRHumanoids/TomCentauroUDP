@@ -27,8 +27,8 @@
 
             <param name="model_description/robot_description" textfile="$(find tom_centauro)/urdf/centauro_dagana_virtual_frame_capsule.urdf"/>
             <param name="model_description/robot_description_semantic" textfile="$(find tom_centauro)/srdf/centauro_dagana_virtual_frame_capsule.srdf"/>
-            <param name="robot_description" textfile="$(find centauro_urdf)/urdf/centauro_dagana.urdf"/>
-            <param name="robot_description_semantic" textfile="$(find centauro_srdf)/srdf/centauro_dagana.srdf"/>
+            <param name="robot_description" textfile="$(find tom_centauro)/urdf/centauro_dagana.urdf"/>
+            <param name="robot_description_semantic" textfile="$(find tom_centauro)/srdf/centauro_dagana.srdf"/>
             <param name="robot_description_capsule" textfile="$(find tom_centauro)/urdf/centauro_dagana_virtual_frame_capsule.urdf"/>
             <param name="robot_description_semantic_capsule" textfile="$(find tom_centauro)/srdf/centauro_dagana_virtual_frame_capsule.srdf"/>
             <param name="cartesian/problem_description" textfile="$(arg ik)"/>

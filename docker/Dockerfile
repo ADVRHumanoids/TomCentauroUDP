@@ -19,5 +19,5 @@ RUN forest add-recipes git@github.com:advrhumanoids/multidof_recipes.git --tag m
 RUN echo 1 && forest grow cartesio_collision_support -j4 --pwd user
 RUN echo 1 && forest grow iit-centauro-ros-pkg -j4 --pwd user
 RUN echo 1 && forest grow centauro_cartesio -j4
-RUN echo 1 && forest grow tom_centauro_udp -j4
+RUN echo 2 && forest grow tom_centauro_udp -j4
 
