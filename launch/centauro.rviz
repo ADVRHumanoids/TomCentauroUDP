@@ -6,7 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Centauro1/Links1
+        - /Centauro1
       Splitter Ratio: 0.6167147159576416
     Tree Height: 719
   - Class: rviz/Selection
@@ -58,47 +58,7 @@ Visualization Manager:
       Enabled: true
       Links:
         All Links Enabled: true
-        D435_head_camera_accel_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_accel_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         D435_head_camera_bottom_screw_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_color_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_color_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_gyro_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_gyro_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_left_ir_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_left_ir_optical_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -107,55 +67,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        D435_head_camera_right_ir_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435_head_camera_right_ir_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_accel_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_accel_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         D435i_camera_bottom_screw_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_color_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_color_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_depth_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_depth_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_gyro_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_gyro_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_left_ir_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_left_ir_optical_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -164,59 +76,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        D435i_camera_right_ir_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        D435i_camera_right_ir_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        T265_camera_accel_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_accel_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_fisheye1_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_fisheye1_rgb_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_fisheye2_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_fisheye2_rgb_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_gyro_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_gyro_optical_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        T265_camera_pose_frame:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         ankle1_1:
           Alpha: 1
           Show Axes: false
@@ -334,16 +197,31 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        ball2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        ball2_tip:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        car_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        car_frame_intermediate_1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        car_frame_intermediate_2:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        car_frame_intermediate_3:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        car_frame_intermediate_4:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        car_frame_intermediate_5:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -364,6 +242,16 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         d435_head_motor:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dagana_2_bottom_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dagana_2_top_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -447,16 +335,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        velodyne_calib:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        velodyne_calib_base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
         velodyne_motor:
           Alpha: 1
           Show Axes: false
@@ -464,22 +342,22 @@ Visualization Manager:
           Value: true
         wheel_1:
           Alpha: 1
-          Show Axes: true
+          Show Axes: false
           Show Trail: false
           Value: true
         wheel_2:
           Alpha: 1
-          Show Axes: true
+          Show Axes: false
           Show Trail: false
           Value: true
         wheel_3:
           Alpha: 1
-          Show Axes: true
+          Show Axes: false
           Show Trail: false
           Value: true
         wheel_4:
           Alpha: 1
-          Show Axes: true
+          Show Axes: false
           Show Trail: false
           Value: true
         world:
@@ -487,7 +365,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
       Name: Centauro
-      Robot Description: robot_description
+      Robot Description: tom_ik/robot_description_capsule
       TF Prefix: ci
       Update Interval: 0
       Value: true
@@ -495,11 +373,20 @@ Visualization Manager:
     - Class: rviz/InteractiveMarkers
       Enable Transparency: true
       Enabled: true
-      Name: LeftHand
+      Name: RightHand
       Show Axes: false
       Show Descriptions: true
       Show Visual Aids: false
-      Update Topic: /arm1_8_cartesian_marker_server/update
+      Update Topic: /arm2_8_cartesian_marker_server/update
+      Value: true
+    - Class: rviz/InteractiveMarkers
+      Enable Transparency: true
+      Enabled: true
+      Name: VirtualFrame
+      Show Axes: false
+      Show Descriptions: true
+      Show Visual Aids: false
+      Update Topic: /car_frame_cartesian_marker_server/update
       Value: true
   Enabled: true
   Global Options:
@@ -545,9 +432,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3603985905647278
+      Pitch: 0.23539847135543823
       Target Frame: <Fixed Frame>
-      Yaw: 5.658567428588867
+      Yaw: 5.023573398590088
     Saved: ~
 Window Geometry:
   Displays:

@@ -49,14 +49,15 @@ VelocityLimits:
     type: VelocityLimits
     bound_scaling: 0.5
 
+
 Collision:
     type: CollisionConstraint
     lib_name: libcartesio_collision_support.so
     bound_scaling: 0.1
-    distance_threshold: 0.01
+    distance_threshold: 0.02
     max_pairs: 30
-    collision_urdf_path: $(rospack find centauro_urdf)/urdf/centauro_capsule.urdf
-    collision_srdf_path: $(rospack find centauro_srdf)/srdf/centauro_capsule.srdf
+    collision_urdf_path: $(rospack find tom_centauro)/urdf/centauro_dagana_virtual_frame_capsule.urdf
+    collision_srdf_path: $(rospack find tom_centauro)/srdf/centauro_dagana_virtual_frame_capsule.srdf
 
 Gaze:
     type: Gaze
@@ -114,13 +115,6 @@ Rolling_HR:
     lib_name: libcentauro_cartesio_addon.so
     wheel_radius: 0.078
     weight: 1.0
-
-Waist:
-    type: Cartesian
-    distal_link: pelvis
-    base_link: *base_frame
-    lambda: 0.1
-    weight: 1000.0
 
 VirtualFrame:
     type: Cartesian
@@ -214,7 +208,7 @@ Base:
     distal_link: base_link
     base_link: *base_frame
     lambda: 0.1
-    weight: 1.0
+    weight: [1, 1, 1, 1, 1, 1]
 
 Postural:
     type: Postural

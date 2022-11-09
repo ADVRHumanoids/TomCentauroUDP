@@ -5,33 +5,48 @@
     <arg name="ik" default="$(find tom_centauro)/launch/centauro_collision_avoidance_stack.yaml"/>
     <arg name="ns" default="/"/>
     <arg name="gui" default="false"/>
+    <arg name="markers" default="true"/>
 
     <group ns="$(arg ns)">
 
-        <param name="model_description/robot_description" textfile="$(find centauro_urdf)/urdf/centauro_virtual_frame.urdf"/>
 
-        <param name="model_description/robot_description_semantic" textfile="$(find centauro_srdf)/srdf/centauro_virtual_frame.srdf"/>
-
-        <param name="robot_description" textfile="$(find centauro_urdf)/urdf/centauro.urdf"/>
-
-        <param name="robot_description_semantic" textfile="$(find centauro_srdf)/srdf/centauro.srdf"/>
-
-        <param name="robot_description_capsule" textfile="$(find centauro_urdf)/urdf/centauro_capsule.urdf"/>
-
-        <param name="robot_description_semantic_capsule" textfile="$(find centauro_srdf)/srdf/centauro_capsule.srdf"/>
-
-        <param name="cartesian/problem_description" textfile="$(arg ik)"/>
+        
 
         <param name="cartesian/joint_blacklist" type="yaml" value="[velodyne_joint]"/>
 
         <param name="cartesian/velocity_whitelist" type="yaml" value="[j_wheel_1, j_wheel_2, j_wheel_3, j_wheel_4]"/>
 
-        <include file="$(find cartesian_interface)/launch/cartesio.launch">
-            <arg name="rate" value="$(arg rate)"/>
-            <arg name="tf_prefix" value="$(arg tf_prefix)"/>
-        </include>
+        <node pkg="cartesian_interface" type="ros_server_node" name="tom_ik" output="screen" rosmon-stop-timeout="1000">
+            <param name="enable_otg" value="true"/>
+            <param name="is_model_floating_base" value="true"/>
+            <param name="model_type" value="RBDL"/>
+            <param name="solver" value="OpenSot"/>
+            <param name="use_xbot_config" value="false"/>
+            <param name="rate" value="100.0"/>
+            <param name="tf_prefix" value="$(arg tf_prefix)"/>
+
+            <param name="model_description/robot_description" textfile="$(find tom_centauro)/urdf/centauro_dagana_virtual_frame_capsule.urdf"/>
+            <param name="model_description/robot_description_semantic" textfile="$(find tom_centauro)/srdf/centauro_dagana_virtual_frame_capsule.srdf"/>
+            <param name="robot_description" textfile="$(find centauro_urdf)/urdf/centauro_dagana.urdf"/>
+            <param name="robot_description_semantic" textfile="$(find centauro_srdf)/srdf/centauro_dagana.srdf"/>
+            <param name="robot_description_capsule" textfile="$(find tom_centauro)/urdf/centauro_dagana_virtual_frame_capsule.urdf"/>
+            <param name="robot_description_semantic_capsule" textfile="$(find tom_centauro)/srdf/centauro_dagana_virtual_frame_capsule.srdf"/>
+            <param name="cartesian/problem_description" textfile="$(arg ik)"/>
+
+            <remap from="/model_description/robot_description" to="~model_description/robot_description"/>
+            <remap from="/model_description/robot_description_semantic" to="~model_description/robot_description_semantic"/>
+            <remap from="/robot_description" to="~robot_description"/>
+            <remap from="/robot_description_semantic" to="~robot_description_semantic"/>
+            <remap from="/cartesian/problem_description" to="~cartesian/problem_description"/>
+        </node>
 
         <node if="$(arg gui)" pkg="rviz" type="rviz" name="rviz_centauro" args="-d $(find tom_centauro)/launch/centauro.rviz"/>
+
+        <node if="$(arg markers)" pkg="cartesian_interface" type="marker_spawner" name="interactive_markers" output="screen">
+            <param name="tf_prefix" value="$(arg tf_prefix)"/>
+            <remap from="/robot_description" to="/tom_ik/robot_description"/>
+        </node>
+
 
     </group>
 
