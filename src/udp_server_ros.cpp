@@ -6,6 +6,12 @@
 #include <Eigen/Dense>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
+#include <sensor_msgs/JointState.h>
+
+auto clamp = [](float val)
+{
+    return std::max(0.f, std::min(val, 1.f));
+};
 
 int main(int argc, char **argv)
 {
@@ -36,6 +42,22 @@ int main(int argc, char **argv)
     // packets declaration
     tom_centauro_udp::packet::master2slave packet_to_robot;
     tom_centauro_udp::packet::slave2master packet_to_teleop;
+
+    // gripper topics
+    ros::Publisher gripper_pub;
+    ros::Subscriber gripper_sub;
+    std::string gripper_name = nhp.param<std::string>("gripper_prefix",
+                                                      "/xbotcore/gripper/dagana_2");
+
+    gripper_sub = nhp.subscribe<sensor_msgs::JointState>(
+                gripper_name + "/state", 1,
+                [&packet_to_teleop](const auto& msg)
+    {
+        packet_to_teleop.gripper_pos = msg->position.at(0);
+        packet_to_teleop.gripper_force = msg->effort.at(0);
+    });
+
+    gripper_pub = nhp.advertise<sensor_msgs::JointState>(gripper_name + "/command", 1);
 
     int nmsgs = 0;
     int nrepl = 0;
@@ -143,6 +165,7 @@ int main(int argc, char **argv)
         // should we pub this reference?
         if(packet_to_robot.run)
         {
+            // ee
             if(packet_to_robot.velocity_ctrl)
             {
                 geometry_msgs::TwistStamped msg;
@@ -161,6 +184,12 @@ int main(int argc, char **argv)
                                                     msg);
                 pub.publish(msg);
             }
+
+            // gripper
+            sensor_msgs::JointState msg;
+            msg.name = {"gripper_joint"};
+            msg.position = {clamp(packet_to_robot.gripper_pos)};
+            gripper_pub.publish(msg);
         }
     }
 }

@@ -15,9 +15,10 @@ ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
 
 RUN forest init
 RUN echo "source $PWD/setup.bash" >> /home/user/.bashrc
-RUN forest add-recipes git@github.com:advrhumanoids/multidof_recipes.git --tag master 
-RUN echo 1 && forest grow cartesio_collision_support -j4 --pwd user
-RUN echo 1 && forest grow iit-centauro-ros-pkg -j4 --pwd user
-RUN echo 1 && forest grow centauro_cartesio -j4
-RUN echo 2 && forest grow tom_centauro_udp -j4
+RUN echo 1 && forest add-recipes git@github.com:advrhumanoids/multidof_recipes.git --tag master 
+RUN forest grow cartesio_collision_support -j4 --pwd user
+RUN forest grow iit-centauro-ros-pkg -j4 --pwd user
+RUN forest grow centauro_cartesio -j4
+RUN forest grow tom_centauro_udp -j4
+RUN forest grow iit-dagana-ros-pkg
 
