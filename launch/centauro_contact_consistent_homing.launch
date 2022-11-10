@@ -1,0 +1,20 @@
+<launch>
+
+    <arg name="rate" default="100.0"/>
+    <arg name="tf_prefix" default="ci"/>
+    <arg name="ns" default="/"/>
+    <arg name="gui" default="false"/>
+
+    <group ns="$(arg ns)">
+
+        <node if="$(arg gui)" pkg="rviz" type="rviz" name="rviz_centauro" args="-d $(find tom_centauro)/launch/centauro.rviz"/>
+
+        <node pkg="tom_centauro" type="contact_homing.py" name="homing" output="screen">
+            <param name="robot_description" textfile="$(find tom_centauro)/urdf/centauro_dagana_virtual_frame_capsule.urdf"/>
+            <param name="robot_description_semantic" textfile="$(find tom_centauro)/srdf/centauro_dagana_virtual_frame_capsule.srdf"/>
+        </node>
+
+
+    </group>
+
+</launch>

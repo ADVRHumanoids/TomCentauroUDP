@@ -1,0 +1,124 @@
+solver_options:
+    regularization: 1e-9
+    back_end: osqp
+    front_end: ihqp
+    nhqp_min_sv_ratio: 0.05
+
+
+stack:
+    -
+      - Postural
+
+      - Steering_FL
+      - Steering_FR
+      - Steering_HL
+      - Steering_HR
+
+      - Rolling_FL
+      - Rolling_FR
+      - Rolling_HL
+      - Rolling_HR
+
+constraints: [JointLimits, VelocityLimits, Collision]
+
+
+define:
+ - &base_frame world
+
+JointLimits:
+    type: JointLimits
+    bound_scaling: 0.95
+    limits:
+      j_arm2_4: [-2.4, -0.6]
+      j_arm1_4: [-2.4, -0.6]
+
+VelocityLimits:
+    type: VelocityLimits
+    bound_scaling: 0.5
+    limits:
+      VIRTUALJOINT_1: 0.0
+      VIRTUALJOINT_2: 0.0
+      VIRTUALJOINT_3: 0.0
+      VIRTUALJOINT_4: 0.0
+      VIRTUALJOINT_5: 0.0
+      VIRTUALJOINT_6: 0.0
+
+
+Collision:
+    type: CollisionConstraint
+    lib_name: libcartesio_collision_support.so
+    bound_scaling: 0.1
+    distance_threshold: 0.02
+    max_pairs: 30
+    collision_urdf_path: $(rospack find tom_centauro)/urdf/centauro_dagana_virtual_frame_capsule.urdf
+    collision_srdf_path: $(rospack find tom_centauro)/srdf/centauro_dagana_virtual_frame_capsule.srdf
+
+
+Steering_FL:
+    type: CentauroSteering
+    wheel_name: wheel_1
+    lib_name: libcentauro_cartesio_addon.so
+    lambda: 0.1
+
+Steering_FR:
+    type: CentauroSteering
+    wheel_name: wheel_2
+    lib_name: libcentauro_cartesio_addon.so
+    lambda: 0.1
+
+Steering_HL:
+    type: CentauroSteering
+    wheel_name: wheel_3
+    lib_name: libcentauro_cartesio_addon.so
+    lambda: 0.1
+
+Steering_HR:
+    type: CentauroSteering
+    wheel_name: wheel_4
+    lib_name: libcentauro_cartesio_addon.so
+    lambda: 0.1
+
+Rolling_FL:
+    type: WheelRolling
+    wheel_name: wheel_1
+    lib_name: libcentauro_cartesio_addon.so
+    wheel_radius: 0.078
+    weight: 1.0
+
+Rolling_FR:
+    type: WheelRolling
+    wheel_name: wheel_2
+    lib_name: libcentauro_cartesio_addon.so
+    wheel_radius: 0.078
+    weight: 1.0
+
+Rolling_HL:
+    type: WheelRolling
+    wheel_name: wheel_3
+    lib_name: libcentauro_cartesio_addon.so
+    wheel_radius: 0.078
+    weight: 1.0
+
+Rolling_HR:
+    type: WheelRolling
+    wheel_name: wheel_4
+    lib_name: libcentauro_cartesio_addon.so
+    wheel_radius: 0.078
+    weight: 1.0
+
+
+Postural:
+    type: Postural
+    lambda: 0.01
+    weight: 1.0
+    disabled_joints:
+
+      - ankle_yaw_1
+      - ankle_yaw_2
+      - ankle_yaw_3
+      - ankle_yaw_4
+      - j_wheel_1
+      - j_wheel_2
+      - j_wheel_3
+      - j_wheel_4
+
