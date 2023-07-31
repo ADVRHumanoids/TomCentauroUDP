@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(tom_centauro)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 find_package(catkin REQUIRED)
 find_package(roscpp REQUIRED)
 find_package(Eigen3 REQUIRED)
