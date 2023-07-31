@@ -32,6 +32,9 @@ int main(int argc, char **argv)
     tom_centauro_udp::packet::master2slave packet_to_robot;
     tom_centauro_udp::fill_pkt_ee_id(packet_to_robot, ee_id);
     packet_to_robot.run = false;
+    packet_to_robot.vel_xy[0] = 0;
+    packet_to_robot.vel_xy[1] = 0;
+    packet_to_robot.vel_yaw = 0;
 
     tom_centauro_udp::packet::slave2master packet_from_robot;
 
