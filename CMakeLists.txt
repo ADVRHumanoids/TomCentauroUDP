@@ -57,12 +57,26 @@ target_link_libraries(${PROJECT_NAME}_dummy_client
 
 
 # xbot2 plugin
-#find_package(xbot2 QUIET)
+find_package(xbot2 QUIET)
 
-#if(${xbot2_FOUND})
-#    add_xbot2_plugin(${PROJECT_NAME}_server_plugin
-#        src/udp_server_plugin.cpp)
-#endif()
+if(${xbot2_FOUND})
+
+    find_package(cartesian_interface REQUIRED)
+
+    add_xbot2_plugin(${PROJECT_NAME}_udp_server
+        src/udp_server_plugin.cpp)
+
+    add_xbot2_plugin(${PROJECT_NAME}_ik
+        src/ik_plugin.cpp)
+
+    target_link_libraries(${PROJECT_NAME}_ik PRIVATE cartesian_interface::CartesianInterface )
+
+    target_link_libraries(${PROJECT_NAME}_udp_server PRIVATE udp_server)
+
+    install(TARGETS ${PROJECT_NAME}_udp_server ${PROJECT_NAME}_ik
+        DESTINATION lib)
+
+endif()
 
 install(TARGETS
     ${PROJECT_NAME}_server_ros
