@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker push arturolaurenzi/tom_centauro:latest
+docker push arturolaurenzi/tom_centauro:dual_arm

@@ -7,5 +7,5 @@ nvidia-docker run --rm -it --gpus all \
  --name tom_centauro \
  --network host \
  --privileged \
- arturolaurenzi/tom_centauro:latest \
+ arturolaurenzi/tom_centauro:dual_arm \
  x-terminal-emulator

@@ -17,10 +17,10 @@ RUN forest init
 RUN echo "source $PWD/setup.bash" >> /home/user/.bashrc
 
 WORKDIR /home/user/tom_ws/src 
-RUN git clone https://github.com/advrhumanoids/tomcentauroudp.git --branch dual_arm_2023 tom_centauro_udp
+RUN echo 1 && git clone https://github.com/advrhumanoids/tomcentauroudp.git --branch dual_arm_2023 tom_centauro_udp
 
 WORKDIR /home/user/tom_ws/ros_src 
-RUN echo 1 && git clone https://github.com/advrhumanoids/iit-inail2arm-ros-pkg.git --branch dual_arm
+RUN git clone https://github.com/advrhumanoids/iit-inail2arm-ros-pkg.git --branch dual_arm
 
 WORKDIR /home/user/tom_ws
 RUN forest add-recipes git@github.com:advrhumanoids/multidof_recipes.git --tag master 
