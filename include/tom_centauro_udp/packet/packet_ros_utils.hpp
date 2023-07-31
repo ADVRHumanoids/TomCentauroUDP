@@ -22,8 +22,8 @@ bool check_pkt_valid(const packet::master2slave& pkt)
     }
 
     if(std::fabs(pkt.vel_xy[0]) > 1.0 ||
-            std::fabs(pkt.vel_xy[1]) > 1.0 ||
-            std::fabs(pkt.vel_yaw) > 1.0)
+        std::fabs(pkt.vel_xy[1]) > 1.0 ||
+        std::fabs(pkt.vel_yaw) > 1.0)
     {
         printf("invalid vel command (out of range) \n");
         return false;
@@ -32,7 +32,7 @@ bool check_pkt_valid(const packet::master2slave& pkt)
     float quat_norm = Eigen::Vector4f::Map(pkt.rotation).norm();
 
     if(!pkt.velocity_ctrl &&
-            (quat_norm < 0.99 || quat_norm > 1.01))
+        (quat_norm < 0.99 || quat_norm > 1.01))
     {
         printf("invalid quaternion norm \n");
         return false;
@@ -83,6 +83,26 @@ void fill_pkt_with_pose(packet_t& pkt,
 }
 
 template <typename packet_t>
+void fill_pkt_with_pose(packet_t& pkt,
+                        const Eigen::Affine3d& pose)
+{
+    pkt.position_x = pose.translation().x();
+    pkt.position_y = pose.translation().y();
+    pkt.position_z = pose.translation().z();
+
+    Eigen::Quaterniond q(pose.linear());
+
+    q.normalize();
+
+    pkt.rotation[0] = q.w();
+    pkt.rotation[1] = q.x();
+    pkt.rotation[2] = q.y();
+    pkt.rotation[3] = q.z();
+
+}
+
+
+template <typename packet_t>
 void get_pose_from_pkt(packet_t& pkt,
                        geometry_msgs::PoseStamped& pose)
 {
@@ -104,6 +124,25 @@ void get_pose_from_pkt(packet_t& pkt,
     pose.pose.orientation.z = q.z();
     pose.pose.orientation.w = q.w();
 }
+
+template <typename packet_t>
+void get_pose_from_pkt(packet_t& pkt,
+                       Eigen::Affine3d& pose)
+{
+    pose.translation() << pkt.position_x,
+        pkt.position_y,
+        pkt.position_z;
+
+    Eigen::Quaterniond q(pkt.rotation[0],
+                         pkt.rotation[1],
+                         pkt.rotation[2],
+                         pkt.rotation[3]);
+
+    q.normalize();
+
+    pose.linear() = q.toRotationMatrix();
+}
+
 
 }
 
