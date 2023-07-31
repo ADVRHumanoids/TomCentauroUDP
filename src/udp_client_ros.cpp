@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     std::string addr = "127.0.0.1";
     int port = 8081;
 
-    std::string ee_id = "arm2_8";
+    std::string ee_id = "left_ee";
 
     if(argc > 1)
     {
