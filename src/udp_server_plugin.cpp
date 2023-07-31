@@ -31,6 +31,15 @@ void UdpServerPlugin::on_start()
     tom_centauro_udp::packet::master2slave packet_to_robot;
     while(_srv.try_receive(packet_to_robot));
 
+    // start ik
+    if(!sendCommand("ik_plugin", Command::Start))
+    {
+        throw std::runtime_error("could not start ik plugin");
+    }
+
+    _last_heartbeat_recv_time = chrono::steady_clock::now();
+
+    // initialize
     _nmsgs = 0;
     _nrepl = 0;
     _start_time = chrono::steady_clock::now();

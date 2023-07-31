@@ -58,10 +58,10 @@ bool IkPlugin::on_initialize()
         // define command subscriber callback
         auto sub_ref_fn = [this, cart](const Eigen::Affine3d& msg)
         {
-            jinfo("{} received pose: {} {}",
-                  cart->getName(),
-                  msg.translation().transpose(),
-                  Eigen::Quaterniond(msg.linear()).coeffs().transpose());
+//            jinfo("{} received pose: {} {}",
+//                  cart->getName(),
+//                  msg.translation().transpose(),
+//                  Eigen::Quaterniond(msg.linear()).coeffs().transpose());
 
             cart->setPoseReference(msg);
         };
