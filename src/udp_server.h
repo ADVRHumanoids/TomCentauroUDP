@@ -21,8 +21,11 @@ public:
     // bind to local address/port
     bool bind(std::string addr, int port);
 
+    // set receive timeout
+    void set_timeout_sec(double t_sec);
+
     // blocking receive
-    int receive(uint8_t * buffer, size_t size);
+    int receive(uint8_t * buffer, size_t size, bool * timeout_expired = nullptr);
 
     // non-blocking receive
     int try_receive(uint8_t * buffer, size_t size);
@@ -49,13 +52,15 @@ public:
 
     using UdpServerRaw::bind;
 
+    using UdpServerRaw::set_timeout_sec;
+
     using UdpServerRaw::get_last_client_address;
 
     // blocking receive
-    bool receive(rx_t& msg)
+    bool receive(rx_t& msg, bool * timeout_expired = nullptr)
     {
         return UdpServerRaw::receive(reinterpret_cast<uint8_t*>(&msg),
-                                     sizeof(msg)) == sizeof(msg);
+                                     sizeof(msg), timeout_expired) == sizeof(msg);
     }
 
     // non-blocking receive

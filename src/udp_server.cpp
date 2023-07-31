@@ -1,4 +1,5 @@
 #include "udp_server.h"
+#include <math.h>
 
 UdpServerRaw::UdpServerRaw()
 {
@@ -40,7 +41,18 @@ bool UdpServerRaw::bind(std::string addr, int port)
     return true;
 }
 
-int UdpServerRaw::receive(uint8_t *buffer, size_t size)
+void UdpServerRaw::set_timeout_sec(double t_sec)
+{
+    struct timeval tv;
+    tv.tv_sec = floor(t_sec);
+    tv.tv_usec = (t_sec - tv.tv_sec)*1e6;
+    if (setsockopt(_fd, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0)
+    {
+        perror("set_timeout_sec failed");
+    }
+}
+
+int UdpServerRaw::receive(uint8_t *buffer, size_t size, bool * timeout_expired)
 {
     socklen_t cl_addr_size = sizeof(_cl_addr);
 
@@ -51,9 +63,15 @@ int UdpServerRaw::receive(uint8_t *buffer, size_t size)
                          (struct sockaddr *)&_cl_addr,
                          &cl_addr_size);
 
-    if(ret == -1)
+    if(ret == -1 &&
+        errno != EAGAIN && errno != EWOULDBLOCK)
     {
         perror("recvfrom failed");
+    }
+
+    if(timeout_expired)
+    {
+        *timeout_expired = errno == EAGAIN || errno == EWOULDBLOCK;
     }
 
     return ret;
@@ -66,12 +84,12 @@ int UdpServerRaw::try_receive(uint8_t *buffer, size_t size)
     int ret = ::recvfrom(_fd,
                          buffer,
                          size,
-                         MSG_WAITALL,
+                         MSG_DONTWAIT,
                          (struct sockaddr *)&_cl_addr,
                          &cl_addr_size);
 
     if(ret == -1 &&
-            (errno != EAGAIN || errno == EWOULDBLOCK))
+            errno != EAGAIN && errno != EWOULDBLOCK)
     {
         perror("recvfrom failed");
     }
